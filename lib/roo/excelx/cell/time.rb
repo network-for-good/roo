@@ -29,7 +29,7 @@ module Roo
           datetime_string = date.strftime('%Y-%m-%d %H:%M:%S.%N')
           t = round_datetime(datetime_string)
 
-          ::DateTime.civil(t.year, t.month, t.day, t.hour, t.min, t.sec)
+          ::DateTime.civil(t.year, t.month, t.day, t.hour, t.min, t.sec, (t.utc_offset/60/60).to_s)
         end
 
         def round_datetime(datetime_string)
