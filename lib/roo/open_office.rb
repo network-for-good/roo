@@ -419,7 +419,7 @@ module Roo
         if attribute(table_cell, 'date-value').size != 'XXXX-XX-XX'.size
           #-- dann ist noch eine Uhrzeit vorhanden
           #-- "1961-11-21T12:17:18"
-          @cell[sheet][key]      = DateTime.parse(attribute(table_cell, 'date-value').to_s)
+          @cell[sheet][key]      = Time.parse(attribute(table_cell, 'date-value').to_s).to_datetime
           @cell_type[sheet][key] = :datetime
         else
           @cell[sheet][key] = table_cell.attributes['date-value']
