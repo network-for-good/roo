@@ -1119,31 +1119,35 @@ Sheet 3:
     with_each_spreadsheet(:name=>'datetime') do |oo|
       val = oo.cell('c',3)
       assert_equal :datetime, oo.celltype('c',3)
-      assert_equal DateTime.new(1961,11,21,12,17,18), val
+      t = Time.new(1961,11,21,12,17,18)
+      utc_offset = (t.utc_offset/60/60).to_s
+      assert_equal DateTime.new(1961,11,21,12,17,18, utc_offset), val
       assert_kind_of DateTime, val
       val = oo.cell('a',1)
       assert_equal :date, oo.celltype('a',1)
       assert_kind_of Date, val
       assert_equal Date.new(1961,11,21), val
       assert_equal Date.new(1961,11,21), oo.cell('a',1)
-      assert_equal DateTime.new(1961,11,21,12,17,18), oo.cell('a',3)
-      assert_equal DateTime.new(1961,11,21,12,17,18), oo.cell('b',3)
-      assert_equal DateTime.new(1961,11,21,12,17,18), oo.cell('c',3)
-      assert_equal DateTime.new(1961,11,21,12,17,18), oo.cell('a',4)
-      assert_equal DateTime.new(1961,11,21,12,17,18), oo.cell('b',4)
-      assert_equal DateTime.new(1961,11,21,12,17,18), oo.cell('c',4)
-      assert_equal DateTime.new(1961,11,21,12,17,18), oo.cell('a',5)
-      assert_equal DateTime.new(1961,11,21,12,17,18), oo.cell('b',5)
-      assert_equal DateTime.new(1961,11,21,12,17,18), oo.cell('c',5)
+      assert_equal DateTime.new(1961,11,21,12,17,18, utc_offset), oo.cell('a',3)
+      assert_equal DateTime.new(1961,11,21,12,17,18, utc_offset), oo.cell('b',3)
+      assert_equal DateTime.new(1961,11,21,12,17,18, utc_offset), oo.cell('c',3)
+      assert_equal DateTime.new(1961,11,21,12,17,18, utc_offset), oo.cell('a',4)
+      assert_equal DateTime.new(1961,11,21,12,17,18, utc_offset), oo.cell('b',4)
+      assert_equal DateTime.new(1961,11,21,12,17,18, utc_offset), oo.cell('c',4)
+      assert_equal DateTime.new(1961,11,21,12,17,18, utc_offset), oo.cell('a',5)
+      assert_equal DateTime.new(1961,11,21,12,17,18, utc_offset), oo.cell('b',5)
+      assert_equal DateTime.new(1961,11,21,12,17,18, utc_offset), oo.cell('c',5)
       assert_equal Date.new(1961,11,21), oo.cell('a',6)
       assert_equal Date.new(1961,11,21), oo.cell('b',6)
       assert_equal Date.new(1961,11,21), oo.cell('c',6)
       assert_equal Date.new(1961,11,21), oo.cell('a',7)
       assert_equal Date.new(1961,11,21), oo.cell('b',7)
       assert_equal Date.new(1961,11,21), oo.cell('c',7)
-      assert_equal DateTime.new(2013,11,5,11,45,00), oo.cell('a',8)
-      assert_equal DateTime.new(2013,11,5,11,45,00), oo.cell('b',8)
-      assert_equal DateTime.new(2013,11,5,11,45,00), oo.cell('c',8)
+      t = Time.new(2013,11,5,11,45,00)
+      utc_offset = (t.utc_offset/60/60).to_s
+      assert_equal DateTime.new(2013,11,5,11,45,00, utc_offset), oo.cell('a',8)
+      assert_equal DateTime.new(2013,11,5,11,45,00, utc_offset), oo.cell('b',8)
+      assert_equal DateTime.new(2013,11,5,11,45,00, utc_offset), oo.cell('c',8)
     end
   end
 
@@ -1571,12 +1575,15 @@ where the expected result is
 
   # 2011-08-03
   def test_bug_datetime_to_csv
+    ENV['TZ'] = "US/Eastern"
+    puts Time.now.zone
     with_each_spreadsheet(:name=>'datetime') do |oo|
       Dir.mktmpdir do |tempdir|
         datetime_csv_file = File.join(tempdir,"datetime.csv")
 
         assert oo.to_csv(datetime_csv_file)
         assert File.exists?(datetime_csv_file)
+        p oo.to_csv
         assert_equal "", file_diff('test/files/so_datetime.csv', datetime_csv_file)
       end
     end
